@@ -1,6 +1,8 @@
 import React, { useState, useEffect, InputHTMLAttributes, useRef } from 'react'
 import { usePeepContext } from './context'
 
+import styles from './Field.module.css'
+
 type PeepTrigger = 'focus' | 'input' | 'always'
 
 type PeepFieldProps = {
@@ -8,6 +10,9 @@ type PeepFieldProps = {
   peep?: (value: string) => string
   peepDelay?: number
   peepOn?: PeepTrigger
+  labelClassName?: string
+  inputClassName?: string
+  peepClassName?: string
 } & InputHTMLAttributes<HTMLInputElement>
 
 export const PeepField: React.FC<PeepFieldProps> = ({
@@ -21,6 +26,9 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   onChange,
   onFocus,
   onBlur,
+  labelClassName,
+  inputClassName,
+  peepClassName,
   ...rest
 }) => {
   const [showPeep, setShowPeep] = useState(false)
@@ -71,7 +79,14 @@ export const PeepField: React.FC<PeepFieldProps> = ({
 
   return (
     <div className='peep-field'>
-      {label && <label htmlFor={name}>{label}</label>}
+      {label && (
+        <label
+          htmlFor={name}
+          className={`${styles['peep-label']} ${labelClassName || ''}`}
+        >
+          {label}
+        </label>
+      )}
       <input
         id={name}
         name={name}
@@ -79,13 +94,11 @@ export const PeepField: React.FC<PeepFieldProps> = ({
         onChange={onChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        className={`${styles['peep-input']} ${inputClassName || ''}`}
         {...rest}
       />
       {showPeep && peepMessage && (
-        <div
-          className='peep-hint'
-          style={{ fontSize: '0.875rem', color: context?.peepColor ?? '#888' }}
-        >
+        <div className={`${styles['peep-message']} ${peepClassName || ''}`}>
           {peepMessage}
         </div>
       )}
