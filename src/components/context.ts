@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-type PeepContextType = {
+export type PeepContextType = {
   peepColor?: string
   showOnFocus?: boolean
   peepDelay?: number

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
-import { PeepContext } from './context'
+import { PeepContext } from '../context'
 
-type PeepProviderProps = {
+export type PeepProviderProps = {
   children: ReactNode
   peepColor?: string
   showOnFocus?: boolean
