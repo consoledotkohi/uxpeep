@@ -77,7 +77,7 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   }
 
   return (
-    <div className='peep-textarea'>
+    <div className={cx('peep-textarea')}>
       {label && (
         <label
           htmlFor={name}

@@ -77,7 +77,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   }
 
   return (
-    <div className='peep-field'>
+    <div className={cx('peep-field')}>
       {label && (
         <label
           htmlFor={name}

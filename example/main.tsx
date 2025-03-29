@@ -7,7 +7,7 @@ const App = () => {
   const [nickname, setNickname] = useState('')
   const [bio, setBio] = useState('')
   const [country, setCountry] = useState('')
-
+  const [agreement, setAgreement] = useState(false)
   return (
     <div
       style={{
@@ -51,6 +51,15 @@ const App = () => {
             { label: '대한민국', value: 'kr' },
             { label: '미국', value: 'us' },
           ]}
+          required
+        />
+      </div>
+      <div style={{ margin: '24px 0' }}>
+        <Peep.Checkbox
+          name='agreement'
+          label='동의'
+          checked={agreement}
+          onChange={(e) => setAgreement(e.target.checked)}
           required
         />
       </div>

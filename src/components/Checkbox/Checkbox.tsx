@@ -4,43 +4,35 @@ import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
-import styles from './Select.module.css'
+import styles from './Checkbox.module.css'
 
-export type SelectOption = {
-  label: string
-  value: string
-}
-
-export type PeepSelectProps = {
+export type PeepCheckboxProps = {
   label?: string
-  options: SelectOption[]
   peep?: (value: string) => PeepMessage
   peepDelay?: number
   peepOn?: PeepTrigger
   labelClassName?: string
-  selectClassName?: string
+  checkboxClassName?: string
   peepClassName?: string
   name?: string
-  value?: string
+  checked?: boolean
   required?: boolean
-  onChange?: (e: { target: { name?: string; value: string } }) => void
+  onChange?: (e: { target: { name?: string; checked: boolean } }) => void
 }
 
-export const PeepSelect: React.FC<PeepSelectProps> = ({
+export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
   label,
   name,
-  value = '',
-  options,
+  checked = false,
   peep,
   required,
   peepDelay,
   peepOn,
   onChange,
-  labelClassName,
-  selectClassName,
   peepClassName,
+  labelClassName,
+  checkboxClassName,
 }) => {
-  const [open, setOpen] = useState(false)
   const [showPeep, setShowPeep] = useState(false)
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
@@ -50,13 +42,11 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
   const peepFn = peep ?? getAutoPeepStrategy(name, required)
   const runPeep = usePeepRunner(
     peepFn,
-    String(value),
+    checked ? 'true' : '',
     setPeepMessage,
     setPeepType,
     setShowPeep
   )
-
-  const selectedLabel = options.find((opt) => opt.value === value)?.label || ''
 
   useEffect(() => {
     if (trigger === 'input') {
@@ -68,54 +58,24 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
     return () => {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
     }
-  }, [value, trigger, delay])
+  }, [checked, trigger, delay])
 
-  const handleSelect = (val: string) => {
-    onChange?.({ target: { name, value: val } })
-    setOpen(false)
+  const handleChange = () => {
+    onChange?.({ target: { name, checked: !checked } })
   }
 
   return (
-    <div className={cx('peep-select')}>
-      {label && (
-        <label
-          htmlFor={name}
-          className={`${styles['peep-label']} ${labelClassName || ''}`}
-        >
-          {label}
-        </label>
-      )}
-      <div
-        className={cx(
-          styles['select-box'],
-          open && styles['select-box--open'],
-          selectClassName
-        )}
-      >
-        <button
-          type='button'
-          className={styles.trigger}
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          {selectedLabel || '선택해주세요'}
-        </button>
-        {open && (
-          <ul className={styles.options}>
-            {options.map((opt) => (
-              <li
-                key={opt.value}
-                className={cx(
-                  styles.option,
-                  value === opt.value && styles.selected
-                )}
-                onMouseDown={() => handleSelect(opt.value)}
-              >
-                {opt.label}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <div className={cx('peep-checkbox')}>
+      <label className={cx(styles['checkbox-label'], labelClassName)}>
+        <input
+          type='checkbox'
+          name={name}
+          checked={checked}
+          onChange={handleChange}
+          className={cx(styles.checkbox, checkboxClassName)}
+        />
+        <span>{label}</span>
+      </label>
       {showPeep && peepMessage && (
         <div
           className={cx(
