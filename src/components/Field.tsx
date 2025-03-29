@@ -1,13 +1,20 @@
 import React, { useState, useEffect, InputHTMLAttributes, useRef } from 'react'
 import { usePeepContext } from './context'
 
+import { cx } from '../utils/classnames'
 import styles from './Field.module.css'
 
 type PeepTrigger = 'focus' | 'input' | 'always'
+type PeepMessage =
+  | string
+  | {
+      message: string
+      type?: 'info' | 'error' | 'success'
+    }
 
 type PeepFieldProps = {
   label?: string
-  peep?: (value: string) => string
+  peep?: (value: string) => PeepMessage
   peepDelay?: number
   peepOn?: PeepTrigger
   labelClassName?: string
@@ -33,6 +40,8 @@ export const PeepField: React.FC<PeepFieldProps> = ({
 }) => {
   const [showPeep, setShowPeep] = useState(false)
   const [peepMessage, setPeepMessage] = useState('')
+  const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
+
   const context = usePeepContext()
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -42,9 +51,14 @@ export const PeepField: React.FC<PeepFieldProps> = ({
 
   const runPeep = () => {
     if (peep) {
-      const msg = peep(String(value))
-      setPeepMessage(msg)
-      setShowPeep(!!msg)
+      const raw = peep(String(value))
+
+      const { message, type } =
+        typeof raw === 'string' ? { message: raw, type: 'info' } : raw
+
+      setPeepMessage(message)
+      setPeepType((type as 'info' | 'error' | 'success') || 'info')
+      setShowPeep(!!message)
     }
   }
 
@@ -98,7 +112,13 @@ export const PeepField: React.FC<PeepFieldProps> = ({
         {...rest}
       />
       {showPeep && peepMessage && (
-        <div className={`${styles['peep-message']} ${peepClassName || ''}`}>
+        <div
+          className={cx(
+            styles['peep-message'],
+            styles[`peep-message--${peepType}`],
+            peepClassName
+          )}
+        >
           {peepMessage}
         </div>
       )}
