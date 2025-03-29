@@ -4,8 +4,9 @@ import React, {
   useRef,
   TextareaHTMLAttributes,
 } from 'react'
-import { usePeepContext } from '../context'
 import { cx } from '../../utils/classnames'
+import { usePeepConfig } from '../../hooks/usePeepConfig'
+import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from '../Field/Field.module.css'
 
@@ -38,29 +39,15 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
 
-  const context = usePeepContext()
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const delay = peepDelay ?? context?.peepDelay ?? 0
-  const trigger: PeepTrigger =
-    peepOn ?? (context?.showOnFocus ? 'focus' : 'input')
-
-  const runPeep = () => {
-    if (peep) {
-      const raw = peep(String(value ?? ''))
-
-      const { message, type } =
-        typeof raw === 'string' ? { message: raw, type: 'info' } : raw
-
-      setPeepMessage(message)
-
-      const isValidType = (t: any): t is 'info' | 'error' | 'success' =>
-        ['info', 'error', 'success'].includes(t)
-
-      setPeepType(isValidType(type) ? type : 'info')
-      setShowPeep(!!message)
-    }
-  }
+  const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
+  const runPeep = usePeepRunner(
+    peep,
+    String(value),
+    setPeepMessage,
+    setPeepType,
+    setShowPeep
+  )
 
   useEffect(() => {
     if (trigger === 'input') {
@@ -72,7 +59,7 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
     return () => {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
     }
-  }, [value, trigger, peep, delay])
+  }, [value, trigger, delay])
 
   const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (trigger === 'focus') {

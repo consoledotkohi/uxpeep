@@ -27,7 +27,7 @@ const App = () => {
               return { message: '3자 이상 입력해주세요', type: 'error' }
             return { message: '좋은 닉네임이에요!', type: 'success' }
           }}
-          peepDelay={30}
+          peepDelay={3000}
           peepOn='input' // 또는 "focus" / "always"
         />
       </div>

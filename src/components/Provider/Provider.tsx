@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { PeepContext } from '../context'
+import { PeepContext } from '../../hooks/usePeepContext'
 
 export type PeepProviderProps = {
   children: ReactNode

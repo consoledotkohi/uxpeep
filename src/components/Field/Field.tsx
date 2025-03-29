@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
-import { usePeepContext } from '../context'
 import { cx } from '../../utils/classnames'
+import { usePeepConfig } from '../../hooks/usePeepConfig'
+import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from './Field.module.css'
 
@@ -34,27 +35,16 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
 
-  const context = usePeepContext()
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
+  const runPeep = usePeepRunner(
+    peep,
+    String(value),
+    setPeepMessage,
+    setPeepType,
+    setShowPeep
+  )
 
-  const delay = peepDelay ?? context?.peepDelay ?? 0
-  const trigger: PeepTrigger =
-    peepOn ?? (context?.showOnFocus ? 'focus' : 'input')
-
-  const runPeep = () => {
-    if (peep) {
-      const raw = peep(String(value))
-
-      const { message, type } =
-        typeof raw === 'string' ? { message: raw, type: 'info' } : raw
-
-      setPeepMessage(message)
-      setPeepType((type as 'info' | 'error' | 'success') || 'info')
-      setShowPeep(!!message)
-    }
-  }
-
-  // Trigger logic
   useEffect(() => {
     if (trigger === 'input') {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
@@ -62,11 +52,10 @@ export const PeepField: React.FC<PeepFieldProps> = ({
     } else if (trigger === 'always') {
       runPeep()
     }
-    // cleanup
     return () => {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
     }
-  }, [value, trigger, peep, delay])
+  }, [value, trigger, delay])
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     if (trigger === 'focus') {
