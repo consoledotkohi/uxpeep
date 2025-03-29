@@ -6,6 +6,7 @@ import { Peep } from '../src/components'
 const App = () => {
   const [nickname, setNickname] = useState('')
   const [bio, setBio] = useState('')
+  const [country, setCountry] = useState('')
 
   return (
     <div
@@ -38,6 +39,19 @@ const App = () => {
               ? { message: '10자 이상 입력해주세요', type: 'error' }
               : { message: '좋은 소개네요!', type: 'success' }
           }
+        />
+      </div>
+      <div style={{ margin: '24px 0' }}>
+        <Peep.Select
+          name='country'
+          label='국가 선택'
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          options={[
+            { label: '대한민국', value: 'kr' },
+            { label: '미국', value: 'us' },
+          ]}
+          required
         />
       </div>
     </div>
