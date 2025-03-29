@@ -6,7 +6,7 @@ import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from './Field.module.css'
 
-type PeepFieldProps = {
+export type PeepFieldProps = {
   label?: string
   peep?: (value: string) => PeepMessage
   peepDelay?: number

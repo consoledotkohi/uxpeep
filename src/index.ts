@@ -1,4 +1,5 @@
-// src/index.ts
-export const helloPeep = () => {
-  return 'Hello from uxpeep 👀'
-}
+export { Peep } from './components/index'
+export type { PeepFieldProps } from './components/Field/Field'
+export type { PeepTextareaProps } from './components/Textarea/Textarea'
+export type { PeepSelectProps } from './components/Select/Select'
+export type { PeepCheckboxProps } from './components/Checkbox/Checkbox'

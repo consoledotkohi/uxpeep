@@ -1,24 +1,39 @@
 {
   "name": "uxpeep",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Tiny UX assistant that gives real-time input hints.",
+  "author": "kohi",
+  "license": "MIT",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+  "keywords": [
+    "react",
+    "ux",
+    "form",
+    "hint",
+    "component",
+    "library"
+  ],
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "tsup": "^7.3.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.3"
   }
