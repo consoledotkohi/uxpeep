@@ -6,6 +6,7 @@ import { Peep } from '../src/components'
 const App = () => {
   const [nickname, setNickname] = useState('')
   const [bio, setBio] = useState('')
+
   return (
     <div
       style={{
@@ -21,14 +22,9 @@ const App = () => {
           name='nickname'
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
-          peep={(v) => {
-            if (!v) return { message: '닉네임을 입력해주세요', type: 'error' }
-            if (v.length < 3)
-              return { message: '3자 이상 입력해주세요', type: 'error' }
-            return { message: '좋은 닉네임이에요!', type: 'success' }
-          }}
-          peepDelay={3000}
+          peepDelay={0}
           peepOn='input' // 또는 "focus" / "always"
+          required
         />
       </div>
       <div style={{ margin: '24px 0' }}>

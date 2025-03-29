@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
 import { cx } from '../../utils/classnames'
+import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
@@ -21,6 +22,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   type = 'text',
   value,
   peep,
+  required,
   peepDelay,
   peepOn,
   onChange,
@@ -35,10 +37,12 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
 
+  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
   const runPeep = usePeepRunner(
-    peep,
+    peepFn,
     String(value),
     setPeepMessage,
     setPeepType,
