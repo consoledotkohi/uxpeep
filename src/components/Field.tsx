@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
-import { cx } from '../../utils/classnames'
-import { getAutoPeepStrategy } from '../../utils/strategies'
-import { usePeepConfig } from '../../hooks/usePeepConfig'
-import { usePeepRunner } from '../../hooks/usePeepRunner'
-import { PeepTrigger, PeepMessage } from '../../types/peep'
-import styles from './Field.module.css'
+import { getAutoPeepStrategy } from '../utils/strategies'
+import { usePeepConfig } from '../hooks/usePeepConfig'
+import { usePeepRunner } from '../hooks/usePeepRunner'
+import { PeepTrigger, PeepMessage } from '../types/peep'
 
 export type PeepFieldProps = {
   label?: string
@@ -80,10 +78,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   return (
     <div className='peep-field'>
       {label && (
-        <label
-          htmlFor={name}
-          className={cx(styles['peep-label'], labelClassName)}
-        >
+        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
           {label}
         </label>
       )}
@@ -92,18 +87,14 @@ export const PeepField: React.FC<PeepFieldProps> = ({
         name={name}
         type={type}
         required={required}
-        className={cx(styles['peep-input'], inputClassName)}
+        className={`peep-input ${inputClassName}`}
         onFocus={handleFocus}
         onBlur={handleBlur}
         {...rest}
       />
       {showPeep && peepMessage && (
         <div
-          className={cx(
-            styles['peep-message'],
-            styles[`peep-message--${peepType}`],
-            peepClassName
-          )}
+          className={`peep-message peep-message--${peepType} ${peepClassName}`}
         >
           {peepMessage}
         </div>

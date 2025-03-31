@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { cx } from '../../utils/classnames'
-import { getAutoPeepStrategy } from '../../utils/strategies'
-import { usePeepConfig } from '../../hooks/usePeepConfig'
-import { usePeepRunner } from '../../hooks/usePeepRunner'
-import { PeepTrigger, PeepMessage } from '../../types/peep'
-import styles from './Select.module.css'
+import { cx } from '../utils/classnames'
+import { getAutoPeepStrategy } from '../utils/strategies'
+import { usePeepConfig } from '../hooks/usePeepConfig'
+import { usePeepRunner } from '../hooks/usePeepRunner'
+import { PeepTrigger, PeepMessage } from '../types/peep'
 
 export type SelectOption = {
   label: string
@@ -81,36 +80,28 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
   return (
     <div className='peep-select'>
       {label && (
-        <label
-          htmlFor={name}
-          className={cx(styles['peep-label'], labelClassName)}
-        >
+        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
           {label}
         </label>
       )}
       <div
-        className={cx(
-          styles['select-box'],
-          open && styles['select-box--open'],
-          selectClassName
-        )}
+        className={`select-box ${
+          open && 'select-box--open'
+        } ${selectClassName}`}
       >
         <button
           type='button'
-          className={styles.trigger}
+          className='trigger'
           onClick={() => setOpen((prev) => !prev)}
         >
           {selectedLabel || '선택해주세요'}
         </button>
         {open && (
-          <ul className={styles.options}>
+          <ul className='options'>
             {options.map((opt) => (
               <li
                 key={opt.value}
-                className={cx(
-                  styles.option,
-                  value === opt.value && styles.selected
-                )}
+                className={`option ${value === opt.value && 'selected'}`}
                 onMouseDown={() => handleSelect(opt.value)}
               >
                 {opt.label}
@@ -121,11 +112,7 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
       </div>
       {showPeep && peepMessage && (
         <div
-          className={cx(
-            styles['peep-message'],
-            styles[`peep-message--${peepType}`],
-            peepClassName
-          )}
+          className={`peep-message peep-message--${peepType} ${peepClassName}`}
         >
           {peepMessage}
         </div>

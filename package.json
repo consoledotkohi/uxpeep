@@ -8,12 +8,12 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "style": "dist/index.css",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts",
-      "styles": "./dist/styles/peep.css"
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -22,8 +22,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build:css": "node scripts/build-css.js",
-    "build": "tsup src/index.ts --format esm,cjs --dts && npm run build:css",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

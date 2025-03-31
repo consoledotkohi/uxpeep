@@ -1,35 +1,37 @@
-import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
-import { cx } from '../../utils/classnames'
-import { getAutoPeepStrategy } from '../../utils/strategies'
-import { usePeepConfig } from '../../hooks/usePeepConfig'
-import { usePeepRunner } from '../../hooks/usePeepRunner'
-import { PeepTrigger, PeepMessage } from '../../types/peep'
-import styles from './Checkbox.module.css'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  TextareaHTMLAttributes,
+} from 'react'
+import { cx } from '../utils/classnames'
+import { getAutoPeepStrategy } from '../utils/strategies'
+import { usePeepConfig } from '../hooks/usePeepConfig'
+import { usePeepRunner } from '../hooks/usePeepRunner'
+import { PeepTrigger, PeepMessage } from '../types/peep'
 
-export type PeepCheckboxProps = {
+export type PeepTextareaProps = {
   label?: string
   peep?: (value: string) => PeepMessage
   peepDelay?: number
   peepOn?: PeepTrigger
   labelClassName?: string
-  checkboxClassName?: string
+  textareaClassName?: string
   peepClassName?: string
-} & InputHTMLAttributes<HTMLInputElement>
+} & TextareaHTMLAttributes<HTMLTextAreaElement>
 
-export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
+export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   label,
   name,
   required,
-  checked,
   peep,
   peepDelay,
   peepOn,
   labelClassName,
-  checkboxClassName,
+  textareaClassName,
   peepClassName,
   onFocus,
   onBlur,
-  onChange,
   ...rest
 }) => {
   const [showPeep, setShowPeep] = useState(false)
@@ -39,8 +41,8 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
 
-  const value = checked ? 'true' : ''
   const fallbackPeep = getAutoPeepStrategy(name, required)
+  const value = (rest.value ?? '').toString()
   const peepFn = peep ?? (() => fallbackPeep(value))
 
   const runPeep = usePeepRunner(
@@ -61,16 +63,16 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
     return () => {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
     }
-  }, [checked, trigger, delay])
+  }, [value, trigger, delay])
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (trigger === 'focus') {
       delayTimeout.current = setTimeout(() => runPeep(), delay)
     }
     onFocus?.(e)
   }
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (trigger === 'focus') {
       if (delayTimeout.current) clearTimeout(delayTimeout.current)
       setShowPeep(false)
@@ -79,28 +81,24 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
   }
 
   return (
-    <div className='peep-checkbox'>
-      <label className={cx(styles['checkbox-label'], labelClassName)}>
-        <input
-          type='checkbox'
-          name={name}
-          checked={checked}
-          required={required}
-          className={cx(styles.checkbox, checkboxClassName)}
-          onChange={onChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          {...rest}
-        />
-        <span>{label}</span>
-      </label>
+    <div className='peep-label'>
+      {label && (
+        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
+          {label}
+        </label>
+      )}
+      <textarea
+        id={name}
+        name={name}
+        required={required}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        className={`peep-textarea ${textareaClassName}`}
+        {...rest}
+      />
       {showPeep && peepMessage && (
         <div
-          className={cx(
-            styles['peep-message'],
-            styles[`peep-message--${peepType}`],
-            peepClassName
-          )}
+          className={`peep-message peep-message--${peepType} ${peepClassName}`}
         >
           {peepMessage}
         </div>

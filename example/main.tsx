@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { Peep } from '../src/components'
+import { Peep } from '../src'
 
 const App = () => {
   const [nickname, setNickname] = useState('')
