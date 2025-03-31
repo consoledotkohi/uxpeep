@@ -5,10 +5,11 @@ import React, {
   TextareaHTMLAttributes,
 } from 'react'
 import { cx } from '../../utils/classnames'
+import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
-import styles from '../Field/Field.module.css'
+import styles from './Textarea.module.css'
 
 export type PeepTextareaProps = {
   label?: string
@@ -23,16 +24,15 @@ export type PeepTextareaProps = {
 export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   label,
   name,
-  value,
+  required,
   peep,
   peepDelay,
   peepOn,
-  onChange,
-  onFocus,
-  onBlur,
   labelClassName,
   textareaClassName,
   peepClassName,
+  onFocus,
+  onBlur,
   ...rest
 }) => {
   const [showPeep, setShowPeep] = useState(false)
@@ -41,9 +41,14 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
+
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+  const value = (rest.value ?? '').toString()
+  const peepFn = peep ?? (() => fallbackPeep(value))
+
   const runPeep = usePeepRunner(
-    peep,
-    String(value),
+    peepFn,
+    value,
     setPeepMessage,
     setPeepType,
     setShowPeep
@@ -77,11 +82,11 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   }
 
   return (
-    <div className={cx('peep-textarea')}>
+    <div className='peep-textarea'>
       {label && (
         <label
           htmlFor={name}
-          className={`${styles['peep-label']} ${labelClassName || ''}`}
+          className={cx(styles['peep-label'], labelClassName)}
         >
           {label}
         </label>
@@ -89,11 +94,10 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
       <textarea
         id={name}
         name={name}
-        value={value}
-        onChange={onChange}
+        required={required}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={`${styles['peep-input']} ${textareaClassName || ''}`}
+        className={cx(styles['peep-textarea'], textareaClassName)}
         {...rest}
       />
       {showPeep && peepMessage && (

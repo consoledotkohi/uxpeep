@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
 import { cx } from '../../utils/classnames'
 import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
@@ -14,24 +14,23 @@ export type PeepCheckboxProps = {
   labelClassName?: string
   checkboxClassName?: string
   peepClassName?: string
-  name?: string
-  checked?: boolean
-  required?: boolean
-  onChange?: (e: { target: { name?: string; checked: boolean } }) => void
-}
+} & InputHTMLAttributes<HTMLInputElement>
 
 export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
   label,
   name,
-  checked = false,
-  peep,
   required,
+  checked,
+  peep,
   peepDelay,
   peepOn,
-  onChange,
-  peepClassName,
   labelClassName,
   checkboxClassName,
+  peepClassName,
+  onFocus,
+  onBlur,
+  onChange,
+  ...rest
 }) => {
   const [showPeep, setShowPeep] = useState(false)
   const [peepMessage, setPeepMessage] = useState('')
@@ -39,10 +38,14 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
-  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+
+  const value = checked ? 'true' : ''
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+  const peepFn = peep ?? (() => fallbackPeep(value))
+
   const runPeep = usePeepRunner(
     peepFn,
-    checked ? 'true' : '',
+    value,
     setPeepMessage,
     setPeepType,
     setShowPeep
@@ -60,19 +63,34 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
     }
   }, [checked, trigger, delay])
 
-  const handleChange = () => {
-    onChange?.({ target: { name, checked: !checked } })
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (trigger === 'focus') {
+      delayTimeout.current = setTimeout(() => runPeep(), delay)
+    }
+    onFocus?.(e)
+  }
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (trigger === 'focus') {
+      if (delayTimeout.current) clearTimeout(delayTimeout.current)
+      setShowPeep(false)
+    }
+    onBlur?.(e)
   }
 
   return (
-    <div className={cx('peep-checkbox')}>
+    <div className='peep-checkbox'>
       <label className={cx(styles['checkbox-label'], labelClassName)}>
         <input
           type='checkbox'
           name={name}
           checked={checked}
-          onChange={handleChange}
+          required={required}
           className={cx(styles.checkbox, checkboxClassName)}
+          onChange={onChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          {...rest}
         />
         <span>{label}</span>
       </label>

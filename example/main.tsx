@@ -24,7 +24,7 @@ const App = () => {
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           peepDelay={0}
-          peepOn='input' // 또는 "focus" / "always"
+          peepOn='input'
           required
         />
       </div>

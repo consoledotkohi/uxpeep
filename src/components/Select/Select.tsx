@@ -13,16 +13,16 @@ export type SelectOption = {
 
 export type PeepSelectProps = {
   label?: string
+  name?: string
+  value?: string
   options: SelectOption[]
+  required?: boolean
   peep?: (value: string) => PeepMessage
   peepDelay?: number
   peepOn?: PeepTrigger
   labelClassName?: string
   selectClassName?: string
   peepClassName?: string
-  name?: string
-  value?: string
-  required?: boolean
   onChange?: (e: { target: { name?: string; value: string } }) => void
 }
 
@@ -31,14 +31,14 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
   name,
   value = '',
   options,
-  peep,
   required,
+  peep,
   peepDelay,
   peepOn,
-  onChange,
   labelClassName,
   selectClassName,
   peepClassName,
+  onChange,
 }) => {
   const [open, setOpen] = useState(false)
   const [showPeep, setShowPeep] = useState(false)
@@ -47,16 +47,17 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
-  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+  const peepFn = peep ?? (() => fallbackPeep(value))
+
   const runPeep = usePeepRunner(
     peepFn,
-    String(value),
+    value,
     setPeepMessage,
     setPeepType,
     setShowPeep
   )
-
-  const selectedLabel = options.find((opt) => opt.value === value)?.label || ''
 
   useEffect(() => {
     if (trigger === 'input') {
@@ -75,12 +76,14 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
     setOpen(false)
   }
 
+  const selectedLabel = options.find((opt) => opt.value === value)?.label || ''
+
   return (
-    <div className={cx('peep-select')}>
+    <div className='peep-select'>
       {label && (
         <label
           htmlFor={name}
-          className={`${styles['peep-label']} ${labelClassName || ''}`}
+          className={cx(styles['peep-label'], labelClassName)}
         >
           {label}
         </label>

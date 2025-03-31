@@ -6,7 +6,7 @@
   color: #333;
 }
 
-.peep-input {
+.peep-textarea {
   width: 100%;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -18,7 +18,7 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.peep-input:focus {
+.peep-textarea:focus {
   outline: none;
   border-color: #3b82f6; /* blue-500 */
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* focus ring */

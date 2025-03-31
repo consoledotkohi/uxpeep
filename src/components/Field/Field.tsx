@@ -20,30 +20,31 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   label,
   name,
   type = 'text',
-  value,
-  peep,
   required,
+  peep,
   peepDelay,
   peepOn,
-  onChange,
-  onFocus,
-  onBlur,
   labelClassName,
   inputClassName,
   peepClassName,
+  onFocus,
+  onBlur,
   ...rest
 }) => {
   const [showPeep, setShowPeep] = useState(false)
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
 
-  const peepFn = peep ?? getAutoPeepStrategy(name, required)
-
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
+
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+  const value = (rest.value ?? '').toString()
+  const peepFn = peep ?? (() => fallbackPeep(value))
+
   const runPeep = usePeepRunner(
     peepFn,
-    String(value),
+    value,
     setPeepMessage,
     setPeepType,
     setShowPeep
@@ -77,11 +78,11 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   }
 
   return (
-    <div className={cx('peep-field')}>
+    <div className='peep-field'>
       {label && (
         <label
           htmlFor={name}
-          className={`${styles['peep-label']} ${labelClassName || ''}`}
+          className={cx(styles['peep-label'], labelClassName)}
         >
           {label}
         </label>
@@ -89,11 +90,11 @@ export const PeepField: React.FC<PeepFieldProps> = ({
       <input
         id={name}
         name={name}
-        value={value}
-        onChange={onChange}
+        type={type}
+        required={required}
+        className={cx(styles['peep-input'], inputClassName)}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={`${styles['peep-input']} ${inputClassName || ''}`}
         {...rest}
       />
       {showPeep && peepMessage && (
