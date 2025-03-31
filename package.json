@@ -16,10 +16,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "dist/styles"
   ],
   "scripts": {
     "dev": "vite",
+    "build:css": "node scripts/build-css.js",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "prepublishOnly": "npm run build"
   },
@@ -40,6 +42,7 @@
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "glob": "^11.0.1",
     "tsup": "^7.3.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.3"
