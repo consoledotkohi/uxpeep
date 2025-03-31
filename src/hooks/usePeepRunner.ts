@@ -9,9 +9,9 @@ export function extractPeep(raw: PeepMessage): {
   }
   const validTypes = ['info', 'error', 'success']
   return {
-    message: raw.message,
-    type: validTypes.includes(raw.type || '')
-      ? (raw.type as 'info' | 'error' | 'success')
+    message: raw?.message ?? '',
+    type: validTypes.includes(raw?.type || '')
+      ? (raw?.type as 'info' | 'error' | 'success')
       : 'info',
   }
 }

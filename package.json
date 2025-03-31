@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "vite",
     "build:css": "node scripts/build-css.js",
-    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "build": "tsup src/index.ts --format esm,cjs --dts && npm run build:css",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
