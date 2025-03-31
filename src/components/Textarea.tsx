@@ -4,7 +4,6 @@ import React, {
   useRef,
   TextareaHTMLAttributes,
 } from 'react'
-import { cx } from '../utils/classnames'
 import { getAutoPeepStrategy } from '../utils/strategies'
 import { usePeepConfig } from '../hooks/usePeepConfig'
 import { usePeepRunner } from '../hooks/usePeepRunner'

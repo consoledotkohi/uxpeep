@@ -17,8 +17,10 @@
     }
   },
   "files": [
-    "dist",
-    "dist/styles"
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/index.css"
   ],
   "scripts": {
     "dev": "vite",
