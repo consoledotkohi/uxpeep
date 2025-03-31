@@ -3,6 +3,7 @@ import { cx } from '../../utils/classnames'
 import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
+import { usePeepError } from '../../hooks/usePeepError'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from './Select.module.css'
 
@@ -47,7 +48,11 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
-  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+  const externalError = usePeepError(name)
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+
+  const peepFn = peep ?? (() => externalError || fallbackPeep(String(value)))
+
   const runPeep = usePeepRunner(
     peepFn,
     String(value),

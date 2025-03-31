@@ -1,8 +1,10 @@
+// src/components/Checkbox/PeepCheckbox.tsx
 import React, { useState, useEffect, useRef } from 'react'
 import { cx } from '../../utils/classnames'
 import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
+import { usePeepError } from '../../hooks/usePeepError'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from './Checkbox.module.css'
 
@@ -39,7 +41,11 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
-  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+  const externalError = usePeepError(name)
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+  const peepFn =
+    peep ?? (() => externalError || fallbackPeep(checked ? 'true' : ''))
+
   const runPeep = usePeepRunner(
     peepFn,
     checked ? 'true' : '',
@@ -60,8 +66,8 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
     }
   }, [checked, trigger, delay])
 
-  const handleChange = () => {
-    onChange?.({ target: { name, checked: !checked } })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.({ target: { name, checked: e.target.checked } })
   }
 
   return (
@@ -71,6 +77,7 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
           type='checkbox'
           name={name}
           checked={checked}
+          required={required}
           onChange={handleChange}
           className={cx(styles.checkbox, checkboxClassName)}
         />

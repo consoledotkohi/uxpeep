@@ -7,6 +7,8 @@ import React, {
 import { cx } from '../../utils/classnames'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
+import { usePeepError } from '../../hooks/usePeepError'
+import { getAutoPeepStrategy } from '../../utils/strategies'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from '../Field/Field.module.css'
 
@@ -25,6 +27,7 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   name,
   value,
   peep,
+  required,
   peepDelay,
   peepOn,
   onChange,
@@ -41,8 +44,12 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
 
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
+  const externalError = usePeepError(name)
+  const fallbackPeep = getAutoPeepStrategy(name, required)
+
+  const peepFn = peep ?? (() => externalError || fallbackPeep(String(value)))
   const runPeep = usePeepRunner(
-    peep,
+    peepFn,
     String(value),
     setPeepMessage,
     setPeepType,
