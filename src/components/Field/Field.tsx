@@ -3,7 +3,6 @@ import { cx } from '../../utils/classnames'
 import { getAutoPeepStrategy } from '../../utils/strategies'
 import { usePeepConfig } from '../../hooks/usePeepConfig'
 import { usePeepRunner } from '../../hooks/usePeepRunner'
-import { usePeepError } from '../../hooks/usePeepError'
 import { PeepTrigger, PeepMessage } from '../../types/peep'
 import styles from './Field.module.css'
 
@@ -21,7 +20,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   label,
   name,
   type = 'text',
-  value = '',
+  value,
   peep,
   required,
   peepDelay,
@@ -38,13 +37,10 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   const [peepMessage, setPeepMessage] = useState('')
   const [peepType, setPeepType] = useState<'info' | 'error' | 'success'>('info')
 
+  const peepFn = peep ?? getAutoPeepStrategy(name, required)
+
   const delayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { trigger, delay } = usePeepConfig({ peepOn, peepDelay })
-  const externalError = usePeepError(name)
-  const fallbackPeep = getAutoPeepStrategy(name, required)
-
-  const peepFn = peep ?? (() => externalError || fallbackPeep(String(value)))
-
   const runPeep = usePeepRunner(
     peepFn,
     String(value),
@@ -81,7 +77,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   }
 
   return (
-    <div className='peep-field'>
+    <div className={cx('peep-field')}>
       {label && (
         <label
           htmlFor={name}
@@ -93,13 +89,11 @@ export const PeepField: React.FC<PeepFieldProps> = ({
       <input
         id={name}
         name={name}
-        type={type}
         value={value}
         onChange={onChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
         className={`${styles['peep-input']} ${inputClassName || ''}`}
-        required={required}
         {...rest}
       />
       {showPeep && peepMessage && (
