@@ -1,6 +1,6 @@
 {
   "name": "uxpeep",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Tiny UX assistant that gives real-time input hints.",
   "author": "kohi",
   "license": "MIT",
