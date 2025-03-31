@@ -20,7 +20,7 @@
     "dist"
   ],
   "sideEffects": [
-    "./dist/index.css"
+    "dist/index.css"
   ],
   "scripts": {
     "dev": "vite",
