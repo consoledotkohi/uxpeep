@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { cx } from '../utils/classnames'
 import { getAutoPeepStrategy } from '../utils/strategies'
 import { usePeepConfig } from '../hooks/usePeepConfig'
 import { usePeepRunner } from '../hooks/usePeepRunner'
@@ -79,14 +80,16 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
   return (
     <div className='peep-select'>
       {label && (
-        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
+        <label htmlFor={name} className={cx('peep-label', labelClassName)}>
           {label}
         </label>
       )}
       <div
-        className={`select-box ${
-          open && 'select-box--open'
-        } ${selectClassName}`}
+        className={cx(
+          'select-box',
+          open && 'select-box--open',
+          selectClassName
+        )}
       >
         <button
           type='button'
@@ -100,7 +103,7 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
             {options.map((opt) => (
               <li
                 key={opt.value}
-                className={`option ${value === opt.value && 'selected'}`}
+                className={cx('option', value === opt.value && 'selected')}
                 onMouseDown={() => handleSelect(opt.value)}
               >
                 {opt.label}
@@ -111,7 +114,11 @@ export const PeepSelect: React.FC<PeepSelectProps> = ({
       </div>
       {showPeep && peepMessage && (
         <div
-          className={`peep-message peep-message--${peepType} ${peepClassName}`}
+          className={cx(
+            'peep-message',
+            `peep-message--${peepType}`,
+            peepClassName
+          )}
         >
           {peepMessage}
         </div>

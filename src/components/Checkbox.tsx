@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
+import { cx } from '../utils/classnames'
 import { getAutoPeepStrategy } from '../utils/strategies'
 import { usePeepConfig } from '../hooks/usePeepConfig'
 import { usePeepRunner } from '../hooks/usePeepRunner'
@@ -78,13 +79,13 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
 
   return (
     <div className='peep-checkbox'>
-      <label className={`checkbox-label ${labelClassName}`}>
+      <label className={cx('peep-label', labelClassName)}>
         <input
           type='checkbox'
           name={name}
           checked={checked}
           required={required}
-          className={`checkbox ${checkboxClassName}`}
+          className={cx('peep-checkbox', checkboxClassName)}
           onChange={onChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -94,7 +95,11 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
       </label>
       {showPeep && peepMessage && (
         <div
-          className={`peep-message peep-message--${peepType} ${peepClassName}`}
+          className={cx(
+            'peep-message',
+            `peep-message--${peepType}`,
+            peepClassName
+          )}
         >
           {peepMessage}
         </div>

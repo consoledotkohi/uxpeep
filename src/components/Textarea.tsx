@@ -4,6 +4,7 @@ import React, {
   useRef,
   TextareaHTMLAttributes,
 } from 'react'
+import { cx } from '../utils/classnames'
 import { getAutoPeepStrategy } from '../utils/strategies'
 import { getLengthHint } from '../utils/getLengthHint'
 import { usePeepConfig } from '../hooks/usePeepConfig'
@@ -89,7 +90,7 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
   return (
     <div className='peep-label'>
       {label && (
-        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
+        <label htmlFor={name} className={cx('peep-label', labelClassName)}>
           {label}
         </label>
       )}
@@ -99,12 +100,16 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
         required={required}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={`peep-textarea ${textareaClassName}`}
+        className={cx('peep-textarea', textareaClassName)}
         {...rest}
       />
       {showPeep && peepMessage && (
         <div
-          className={`peep-message peep-message--${peepType} ${peepClassName}`}
+          className={cx(
+            'peep-message',
+            `peep-message--${peepType}`,
+            peepClassName
+          )}
         >
           {peepMessage}
         </div>

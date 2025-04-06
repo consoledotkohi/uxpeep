@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
+import { cx } from '../utils/classnames'
 import { getAutoPeepStrategy } from '../utils/strategies'
 import { getLengthHint } from '../utils/getLengthHint'
 import { usePeepConfig } from '../hooks/usePeepConfig'
@@ -86,25 +87,25 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   return (
     <div className='peep-field'>
       {label && (
-        <label htmlFor={name} className={`peep-label ${labelClassName ?? ''}`}>
-          {label}
-        </label>
+        <label className={cx('peep-label', labelClassName)}>{label}</label>
       )}
       <input
         id={name}
         name={name}
         type={type}
         required={required}
-        className={`peep-input ${inputClassName ?? ''}`}
+        className={cx('peep-input', inputClassName)}
         onFocus={handleFocus}
         onBlur={handleBlur}
         {...rest}
       />
       {showPeep && peepMessage && (
         <div
-          className={`peep-message peep-message--${peepType} ${
-            peepClassName ?? ''
-          }`}
+          className={cx(
+            'peep-message',
+            `peep-message--${peepType}`,
+            peepClassName
+          )}
         >
           {peepMessage}
         </div>
