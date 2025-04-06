@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, InputHTMLAttributes } from 'react'
 import { getAutoPeepStrategy } from '../utils/strategies'
+import { getLengthHint } from '../utils/getLengthHint'
 import { usePeepConfig } from '../hooks/usePeepConfig'
 import { usePeepRunner } from '../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../types/peep'
@@ -38,7 +39,14 @@ export const PeepField: React.FC<PeepFieldProps> = ({
 
   const fallbackPeep = getAutoPeepStrategy(name, required)
   const value = (rest.value ?? '').toString()
-  const peepFn = peep ?? (() => fallbackPeep(value))
+
+  const autoLengthPeep: PeepMessage | undefined = getLengthHint(
+    String(value),
+    rest.minLength,
+    rest.maxLength
+  )
+
+  const peepFn = peep ?? (() => autoLengthPeep || fallbackPeep(value))
 
   const runPeep = usePeepRunner(
     peepFn,
@@ -78,7 +86,7 @@ export const PeepField: React.FC<PeepFieldProps> = ({
   return (
     <div className='peep-field'>
       {label && (
-        <label htmlFor={name} className={`peep-label ${labelClassName}`}>
+        <label htmlFor={name} className={`peep-label ${labelClassName ?? ''}`}>
           {label}
         </label>
       )}
@@ -87,14 +95,16 @@ export const PeepField: React.FC<PeepFieldProps> = ({
         name={name}
         type={type}
         required={required}
-        className={`peep-input ${inputClassName}`}
+        className={`peep-input ${inputClassName ?? ''}`}
         onFocus={handleFocus}
         onBlur={handleBlur}
         {...rest}
       />
       {showPeep && peepMessage && (
         <div
-          className={`peep-message peep-message--${peepType} ${peepClassName}`}
+          className={`peep-message peep-message--${peepType} ${
+            peepClassName ?? ''
+          }`}
         >
           {peepMessage}
         </div>

@@ -26,6 +26,7 @@ const App = () => {
           peepDelay={0}
           peepOn='input'
           required
+          maxLength={10}
         />
       </div>
       <div style={{ margin: '24px 0' }}>
@@ -34,11 +35,12 @@ const App = () => {
           name='bio'
           value={bio}
           onChange={(e) => setBio(e.target.value)}
-          peep={(v) =>
-            v.length < 10
-              ? { message: '10자 이상 입력해주세요', type: 'error' }
-              : { message: '좋은 소개네요!', type: 'success' }
-          }
+          // peep={(v) =>
+          //   v.length < 10
+          //     ? { message: '10자 이상 입력해주세요', type: 'error' }
+          //     : { message: '좋은 소개네요!', type: 'success' }
+          // }
+          maxLength={20}
         />
       </div>
       <div style={{ margin: '24px 0' }}>

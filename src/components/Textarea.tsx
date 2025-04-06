@@ -5,6 +5,7 @@ import React, {
   TextareaHTMLAttributes,
 } from 'react'
 import { getAutoPeepStrategy } from '../utils/strategies'
+import { getLengthHint } from '../utils/getLengthHint'
 import { usePeepConfig } from '../hooks/usePeepConfig'
 import { usePeepRunner } from '../hooks/usePeepRunner'
 import { PeepTrigger, PeepMessage } from '../types/peep'
@@ -42,7 +43,13 @@ export const PeepTextarea: React.FC<PeepTextareaProps> = ({
 
   const fallbackPeep = getAutoPeepStrategy(name, required)
   const value = (rest.value ?? '').toString()
-  const peepFn = peep ?? (() => fallbackPeep(value))
+  const autoLengthPeep: PeepMessage | undefined = getLengthHint(
+    String(value),
+    rest.minLength,
+    rest.maxLength
+  )
+
+  const peepFn = peep ?? (() => autoLengthPeep || fallbackPeep(value))
 
   const runPeep = usePeepRunner(
     peepFn,
