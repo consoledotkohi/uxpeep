@@ -79,13 +79,13 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
 
   return (
     <div className='peep-checkbox'>
-      <label className={cx('peep-label', labelClassName)}>
+      <label className={cx('checkbox-label', labelClassName)}>
         <input
           type='checkbox'
           name={name}
           checked={checked}
           required={required}
-          className={cx('peep-checkbox', checkboxClassName)}
+          className={cx('checkbox', checkboxClassName)}
           onChange={onChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -95,11 +95,7 @@ export const PeepCheckbox: React.FC<PeepCheckboxProps> = ({
       </label>
       {showPeep && peepMessage && (
         <div
-          className={cx(
-            'peep-message',
-            `peep-message--${peepType}`,
-            peepClassName
-          )}
+          className={`peep-message peep-message--${peepType} ${peepClassName}`}
         >
           {peepMessage}
         </div>
